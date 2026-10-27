@@ -30,7 +30,7 @@ from PIL import Image, UnidentifiedImageError
 
 from lerobot.utils.import_utils import _msgpack_available, require_package
 
-from .protocol import Envelope, ErrorCode, ProtocolError
+from .envelope import Envelope, ErrorCode, ProtocolError
 
 if TYPE_CHECKING or _msgpack_available:
     import msgpack

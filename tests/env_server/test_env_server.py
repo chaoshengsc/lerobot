@@ -22,7 +22,7 @@ import numpy as np
 import pytest
 
 from lerobot.env_server.client import EnvClient
-from lerobot.transport.wire.protocol import ErrorCode, ProtocolError
+from lerobot.transport.protocol.envelope import ErrorCode, ProtocolError
 from tests.sim.toy_env import ToyEnv, ToyEnvConfig
 
 
@@ -37,9 +37,9 @@ sys.modules['torch'] = None
 import numpy as np
 import lerobot.env_server.server, lerobot.sim.vector_env, lerobot.sim.integrations.envhub
 import lerobot.scripts.lerobot_env_server
-from lerobot.transport.wire.client import query_reply, decode_reply
+from lerobot.transport.protocol.client import query_reply, decode_reply
 from lerobot.utils.feature_spec import FeatureSpec, feature_mismatch, validate_array
-from lerobot.transport.wire.protocol import Envelope, MessageType, correlate_reply, raise_peer_error, validate_reply
+from lerobot.transport.protocol.envelope import Envelope, MessageType, correlate_reply, raise_peer_error, validate_reply
 feature = FeatureSpec('state', (2,), 'float32', semantics='state-v1')
 assert feature_mismatch(feature, feature) is None
 validate_array(np.zeros(2, np.float32), feature)

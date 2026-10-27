@@ -28,8 +28,8 @@ import numpy as np
 from lerobot.sim.config import SimConfig
 from lerobot.sim.types import EnvDescriptor
 from lerobot.sim.vector_env import VectorEnv
-from lerobot.transport.wire.codec import CodecLimits, RGBImage, decode_message, encode_message
-from lerobot.transport.wire.protocol import Envelope, ErrorCode, MessageType, ProtocolError
+from lerobot.transport.protocol.codec import CodecLimits, RGBImage, decode_message, encode_message
+from lerobot.transport.protocol.envelope import Envelope, ErrorCode, MessageType, ProtocolError
 from lerobot.transport.zenoh import (
     BoundedSubscriber,
     PendingQuery,

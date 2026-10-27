@@ -23,8 +23,8 @@ import numpy as np
 from gymnasium.vector.utils import batch_space
 
 from lerobot.sim.types import EnvDescriptor, StepResult
-from lerobot.transport.wire.client import query_reply
-from lerobot.transport.wire.protocol import Envelope, ErrorCode, MessageType, ProtocolError
+from lerobot.transport.protocol.client import query_reply
+from lerobot.transport.protocol.envelope import Envelope, ErrorCode, MessageType, ProtocolError
 from lerobot.transport.zenoh import PresenceToken, ZenohConfig, ZenohTransport
 
 from .protocol import (

@@ -18,7 +18,7 @@ from collections.abc import Callable
 from typing import Any
 
 from .codec import decode_message, encode_message, peek_envelope
-from .protocol import (
+from .envelope import (
     Envelope,
     ErrorCode,
     MessageType,

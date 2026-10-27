@@ -17,7 +17,7 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
-from lerobot.transport.wire.protocol import (
+from lerobot.transport.protocol.envelope import (
     Envelope,
     ErrorCode,
     MessageType,
@@ -137,7 +137,7 @@ def test_both_clients_use_the_shared_reply_rules(service, failure):
     pytest.importorskip("msgpack")
     from types import SimpleNamespace
 
-    from lerobot.transport.wire.codec import decode_message, encode_message
+    from lerobot.transport.protocol.codec import decode_message, encode_message
 
     def query(_key, payload, *_args, **_kwargs):
         source = decode_message(payload)

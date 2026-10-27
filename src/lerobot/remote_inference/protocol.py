@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Remote inference key addresses and admission errors; the message envelope lives in lerobot.transport.wire."""
+"""Remote inference key addresses and admission errors; the message envelope lives in lerobot.transport.protocol."""
 
 import math
 from typing import Any
 
-from lerobot.transport.wire.protocol import (
+from lerobot.transport.protocol.envelope import (
     PROTOCOL_VERSION,
     Envelope,
     ErrorCode,

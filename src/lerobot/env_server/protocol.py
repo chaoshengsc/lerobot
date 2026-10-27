@@ -23,7 +23,7 @@ from typing import Any
 import numpy as np
 
 from lerobot.sim.types import EnvDescriptor, StepResult
-from lerobot.transport.wire.protocol import PROTOCOL_VERSION, validate_segment
+from lerobot.transport.protocol.envelope import PROTOCOL_VERSION, validate_segment
 from lerobot.utils.feature_spec import FeatureSpec, validate_array
 
 

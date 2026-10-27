@@ -47,8 +47,8 @@ from lerobot.transport import (
     ZenohConfig,
     ZenohTransport,
 )
-from lerobot.transport.wire.client import decode_reply, query_reply
-from lerobot.transport.wire.protocol import validate_reply
+from lerobot.transport.protocol.client import decode_reply, query_reply
+from lerobot.transport.protocol.envelope import validate_reply
 from lerobot.utils.feature_spec import feature_mismatch
 
 from .chunk_contract import (
