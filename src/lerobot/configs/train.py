@@ -30,12 +30,13 @@ from lerobot import envs
 from lerobot.configs.accelerator import AcceleratorConfig, ActivationCheckpointingMode
 from lerobot.configs.parallelism import ParallelismConfig
 from lerobot.optim import LRSchedulerConfig, OptimizerConfig
+from lerobot.optim.ema import EMAConfig
 from lerobot.utils.constants import PRETRAINED_MODEL_DIR
 from lerobot.utils.hub import HubMixin, find_latest_hub_checkpoint
 from lerobot.utils.sample_weighting import SampleWeightingConfig
 
 from . import parser
-from .default import DatasetConfig, EMAConfig, EvalConfig, JobConfig, PeftConfig, WandBConfig
+from .default import DatasetConfig, EvalConfig, JobConfig, PeftConfig, WandBConfig
 from .policies import PreTrainedConfig
 from .rewards import RewardModelConfig
 
@@ -94,6 +95,23 @@ def _migrate_legacy_rabc_fields(config: dict[str, Any]) -> dict[str, Any] | None
         migrated_config["sample_weighting"] = sample_weighting
 
     return migrated_config
+
+
+def _migrate_legacy_ema_fields(config: dict[str, Any]) -> dict[str, Any] | None:
+    """Return migrated payload for the untyped EMA fields, or None when no migration is needed."""
+    ema = config.get("ema")
+    if ema is None or "type" in ema:
+        return None
+    if not ema.get("enable", False):
+        return {**config, "ema": None}
+    if ema.get("decay") is not None:
+        migrated = {"type": "constant", "decay": ema["decay"]}
+    else:
+        warmup = ("inv_gamma", "power", "min_decay", "max_decay")
+        migrated = {"type": "warmup", **{key: ema[key] for key in warmup if key in ema}}
+    if "update_after_step" in ema:
+        migrated["update_after_step"] = ema["update_after_step"]
+    return {**config, "ema": migrated}
 
 
 @dataclass
@@ -155,8 +173,9 @@ class TrainPipelineConfig(HubMixin):
     # FSDP/DDP tuning knobs, compile & activation-checkpointing placeholders.
     accelerator: AcceleratorConfig = field(default_factory=AcceleratorConfig)
     eval: EvalConfig = field(default_factory=EvalConfig)
-    # Maintain an EMA shadow of the policy weights during training (see EMAConfig).
-    ema: EMAConfig = field(default_factory=EMAConfig)
+    # EMA of the trainable policy weights, enabled with --ema.type (see EMAConfig). In-training env eval and the
+    # pushed main branch use the EMA weights.
+    ema: EMAConfig | None = None
     wandb: WandBConfig = field(default_factory=WandBConfig)
     peft: PeftConfig | None = None
 
@@ -457,6 +476,7 @@ class TrainPipelineConfig(HubMixin):
             with open(config_file) as f:
                 config = json.load(f)
             migrated_config = _migrate_legacy_rabc_fields(config)
+            migrated_config = _migrate_legacy_ema_fields(migrated_config or config) or migrated_config
             if migrated_config is not None:
                 with tempfile.NamedTemporaryFile("w+", delete=False, suffix=".json") as f:
                     json.dump(migrated_config, f)
